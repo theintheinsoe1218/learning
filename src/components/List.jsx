@@ -2,7 +2,6 @@ import React from "react";
 import Card from "./Card";
 
 const List = (props) => {
-  console.log(props.userinfos);
   return (
     <>
       {props.userinfos.length > 0 ? (
