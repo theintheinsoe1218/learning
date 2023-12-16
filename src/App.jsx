@@ -1,39 +1,58 @@
 import { useState } from "react";
-import { useEffect } from "react";
 
 function App() {
-  const [todos, setTodos] = useState([]);
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const [id, setId] = useState("");
+  const [error, setError] = useState(false);
+  const [todo, setTodo] = useState(null);
+  const getId = async (e) => {
+    e.preventDefault();
 
-  const fetchData = async () => {
-    const response = await fetch("https://jsonplaceholder.typicode.com/todos/");
+    if (id < 1) {
+      setError(true);
+      setId("");
+      return;
+    }
+    const response = await fetch(
+      `https://jsonplaceholder.typicode.com/todos/${id}`
+    );
     const data = await response.json();
-    setTodos(data);
+    setError(false);
+    setTodo(data);
+
+    setId("");
   };
   return (
     <div className="App">
-      <h1>Fetch Api Using UseEffect</h1>
+      <h1>Fetch Api Using UseEffect With Input </h1>
 
-      <table>
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>title</th>
-            <th>completed</th>
-          </tr>
-        </thead>
-        <tbody>
-          {todos.map((todo) => (
-            <tr key={todo.id}>
-              <td>{todo.id}</td>
-              <td>{todo.title}</td>
-              <td>{todo.completed ? <p>Done</p> : <p>Not Complete</p>}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <form onSubmit={getId}>
+        <input
+          type="number"
+          name=""
+          value={id}
+          onChange={(e) => {
+            setId(e.target.value);
+          }}
+        />
+        <button type="submit">Get Data</button>
+      </form>
+      <div>
+        {error && <h1>Please Enter an valid id. (eg. 1,2,3,...)</h1>}
+        {todo && (
+          <div key={todo.id}>
+            <h1>title - {todo.title}</h1>
+            <h1>userId - {todo.userId}</h1>
+            <h1>
+              completed -{" "}
+              {todo.completed ? (
+                <span>Completed</span>
+              ) : (
+                <span>Not Complete</span>
+              )}
+            </h1>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
